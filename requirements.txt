@@ -1,0 +1,14 @@
+demucs==4.0.1
+
+# Зависимости для НейроКараоке
+# Demucs для отделения вокала от инструментала
+demucs>=4.0.0
+torchcodec==0.8.1
+
+# PyTorch и torchaudio для обработки аудио
+# Установите версию соответствующую вашей системе и CUDA
+# Для GPU с CUDA 11.8:
+# torch>=2.0.0
+# torchaudio>=2.0.0
+# Для CPU или другой версии CUDA см. https://pytorch.org/get-started/locally/
+
