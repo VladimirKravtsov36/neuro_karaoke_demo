@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "demucs>=4.0.0",
+    "streamlit>=1.50.0",
+    "yandex-music>=2.2.0",
+    "soundfile>=0.13.0",
+    "numpy>=1.26.0",
 ]
 
 [project.optional-dependencies]

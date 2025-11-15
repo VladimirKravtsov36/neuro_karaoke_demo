@@ -35,57 +35,44 @@ uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu1
 
 ## Использование
 
-### Командная строка
+### 1. Веб-интерфейс
 
-**С активированным окружением:**
 ```bash
-# Активируйте окружение (если еще не активировано)
 source .venv/bin/activate
-
-# Базовое использование (автоматически использует GPU если доступен)
-python vocal_separator.py assets/songs/Anna_Asti_-_Carica_76886351.mp3
-
-# С явным указанием GPU
-python vocal_separator.py assets/songs/Anna_Asti_-_Carica_76886351.mp3 -d cuda
-
-# Сохранение в MP3 формате
-python vocal_separator.py assets/songs/Anna_Asti_-_Carica_76886351.mp3 --mp3
+streamlit run streamlit_app.py
 ```
 
-**Без активации окружения (используя uv run):**
+1. Введите токен Яндекс Музыки в сайдбаре (см. README, раздел «Токен»).
+2. Найдите трек по названию и выберите нужный результат.
+3. Нажмите «Скачать и подготовить трек», дождитесь Demucs.
+4. Используйте слайдер громкости вокала, скачивайте дорожки, включайте караоке.
+
+### 2. CLI (Demucs напрямую)
+
 ```bash
-# Базовое использование
-uv run python vocal_separator.py assets/songs/Anna_Asti_-_Carica_76886351.mp3
-
-# С явным указанием GPU
-uv run python vocal_separator.py assets/songs/Anna_Asti_-_Carica_76886351.mp3 -d cuda
+PYTHONPATH=src python -m neuro_karaoke.separation \
+    --song assets/songs/Slipknot_-_Wait_and_Bleed_79496406.mp3 \
+    --output-root outputs/separated
 ```
 
-### Python код
+- `--segment 7` — безопасное значение для `htdemucs`.
+- `--mp3` — сохранить в MP3.
+- `--keep-intermediate` — не удалять структуру Demucs.
+
+### 3. Python API
 
 ```python
-from vocal_separator import separate_vocals
+from neuro_karaoke import DemucsSeparator
 
-# Простой способ
-vocals_path, instrumental_path = separate_vocals(
-    "assets/songs/your_song.mp3",
-    device="cuda"  # или "cpu" или None для автоопределения
-)
-
-print(f"Вокал: {vocals_path}")
-print(f"Инструментал: {instrumental_path}")
+separator = DemucsSeparator()
+result = separator.separate_track("assets/songs/Slipknot_-_Wait_and_Bleed_79496406.mp3")
+print(result.vocals_path, result.instrumental_path)
 ```
 
-## Результаты
+## Куда складываются файлы
 
-Результаты сохраняются в папку `separated/MODEL_NAME/TRACK_NAME/`:
-- `vocals.wav` - вокал
-- `no_vocals.wav` - инструментал (минус)
-
-## Примеры
-
-Запустите примеры из `example_usage.py`:
-```bash
-python example_usage.py
-```
+- Скачанные с Яндекс Музыки треки → `downloads/`.
+- Готовые дорожки после Demucs → `outputs/separated/<название трека>/`.
+  - `<track>_vocals.wav` — вокал.
+  - `<track>_instrumental.wav` — инструментал.
 
